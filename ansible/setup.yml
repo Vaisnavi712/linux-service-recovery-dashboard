@@ -1,0 +1,22 @@
+---
+- name: Configure Linux Service Recovery
+  hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: Ensure monitoring script is executable
+      ansible.builtin.file:
+        path: /home/iot/service-recovery-project/scripts/monitor.sh
+        owner: iot
+        group: iot
+        mode: "0755"
+        state: file
+
+    - name: Schedule monitoring every minute
+      ansible.builtin.cron:
+        name: "Linux Service Health Monitor"
+        user: root
+        minute: "*"
+        job: "/home/iot/service-recovery-project/scripts/monitor.sh"
+        state: present
